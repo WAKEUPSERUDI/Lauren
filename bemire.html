@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine 💘</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        background: linear-gradient(to bottom, #ffd6e8, #ff99cc);
+        text-align: center;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        color: #fff;
+    }
+
+    .section {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2.2rem;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .buttons {
+        position: relative;
+        margin-top: 30px;
+    }
+
+    button {
+        padding: 14px 30px;
+        font-size: 18px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: 0.3s ease;
+        margin: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    #yesBtn {
+        background: linear-gradient(45deg, #00e676, #00c853);
+        color: white;
+    }
+
+    #noBtn {
+        background: linear-gradient(45deg, #ff1744, #d50000);
+        color: white;
+        position: absolute;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .celebration {
+        font-size: 2rem;
+        animation: pop 0.6s ease forwards;
+    }
+
+    @keyframes pop {
+        from { transform: scale(0); }
+        to { transform: scale(1); }
+    }
+
+    /* Floating hearts */
+    .heart {
+        position: fixed;
+        bottom: -20px;
+        font-size: 20px;
+        animation: floatUp 6s linear infinite;
+        opacity: 0.8;
+    }
+
+    @keyframes floatUp {
+        from { transform: translateY(0); opacity: 1; }
+        to { transform: translateY(-110vh); opacity: 0; }
+    }
+
+    img {
+        width: 250px;
+        border-radius: 20px;
+        margin-top: 20px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<div class="section">
+    <h1>Will you be my Valentine? 💖</h1>
+
+    <div class="buttons">
+        <button id="yesBtn">Yes 💕</button>
+        <button id="noBtn">No 💔</button>
+    </div>
+
+    <!-- Lilly Flower Image -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/LiliumBulbiferumCroceum.jpg" alt="Lilly Flower">
+</div>
+
+<div class="section hidden" id="loveSection">
+    <div class="celebration">YAYYYYY!!! 💖🥰💍</div>
+    <p>You just made my heart so happy 💞</p>
+</div>
+
+<script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const loveSection = document.getElementById("loveSection");
+    const music = document.getElementById("bgMusic");
+
+    let yesSize = 1;
+
+    function moveNoButton() {
+        const x = Math.random() * (window.innerWidth - 100);
+        const y = Math.random() * (window.innerHeight - 50);
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+
+        yesSize += 0.2;
+        yesBtn.style.transform = `scale(${yesSize})`;
+    }
+
+    noBtn.addEventListener("click", moveNoButton);
+
+    yesBtn.addEventListener("click", () => {
+        loveSection.classList.remove("hidden");
+        loveSection.scrollIntoView({ behavior: "smooth" });
+    });
+
+    // Start music after first interaction (mobile-friendly)
+    document.body.addEventListener("click", () => {
+        music.play().catch(() => {});
+    }, { once: true });
+
+    // Create floating hearts
+    function createHeart() {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+        heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+            heart.remove();
+        }, 6000);
+    }
+
+    setInterval(createHeart, 500);
+</script>
+
+</body>
+</html>
