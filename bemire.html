@@ -1,170 +1,231 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Be My Valentine 💘</title>
+<title>Be My Valentine 💖</title>
 
 <style>
-    body {
-        margin: 0;
-        font-family: 'Comic Sans MS', cursive, sans-serif;
-        background: linear-gradient(to bottom, #ffd6e8, #ff99cc);
-        text-align: center;
-        overflow-x: hidden;
-        scroll-behavior: smooth;
-        color: #fff;
-    }
+body{
+margin:0;
+font-family:'Comic Sans MS',cursive;
+color:white;
+text-align:center;
+overflow-x:hidden;
+scroll-behavior:smooth;
+background:linear-gradient(-45deg,#ff9ecf,#ff4d88,#ff85b3,#ffc1e3);
+background-size:400% 400%;
+animation:gradientMove 10s ease infinite;
+}
 
-    .section {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        position: relative;
-    }
+@keyframes gradientMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
 
-    h1 {
-        font-size: 2.2rem;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
-    }
+.section{
+min-height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:20px;
+position:relative;
+}
 
-    .buttons {
-        position: relative;
-        margin-top: 30px;
-    }
+button{
+padding:14px 30px;
+border:none;
+border-radius:30px;
+font-size:18px;
+margin:10px;
+cursor:pointer;
+transition:0.3s;
+}
 
-    button {
-        padding: 14px 30px;
-        font-size: 18px;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: 0.3s ease;
-        margin: 10px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
+#yesBtn{
+background:linear-gradient(45deg,#00e676,#00c853);
+color:white;
+}
 
-    #yesBtn {
-        background: linear-gradient(45deg, #00e676, #00c853);
-        color: white;
-    }
+#noBtn{
+background:linear-gradient(45deg,#ff1744,#d50000);
+color:white;
+position:absolute;
+}
 
-    #noBtn {
-        background: linear-gradient(45deg, #ff1744, #d50000);
-        color: white;
-        position: absolute;
-    }
+.hidden{display:none;}
 
-    .hidden {
-        display: none;
-    }
+img{
+width:250px;
+border-radius:20px;
+margin-top:20px;
+box-shadow:0 6px 20px rgba(0,0,0,0.3);
+}
 
-    .celebration {
-        font-size: 2rem;
-        animation: pop 0.6s ease forwards;
-    }
+/* Loading screen */
+#loadingScreen{
+position:fixed;
+inset:0;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:1000;
+font-size:24px;
+animation:fadeOut 3s forwards 2s;
+}
+@keyframes fadeOut{
+to{opacity:0;visibility:hidden;}
+}
 
-    @keyframes pop {
-        from { transform: scale(0); }
-        to { transform: scale(1); }
-    }
+/* Password */
+#passwordScreen{
+position:fixed;
+inset:0;
+background:linear-gradient(to bottom,#ff99cc,#ff4d88);
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:999;
+}
 
-    /* Floating hearts */
-    .heart {
-        position: fixed;
-        bottom: -20px;
-        font-size: 20px;
-        animation: floatUp 6s linear infinite;
-        opacity: 0.8;
-    }
+input{
+padding:10px;
+border-radius:10px;
+border:none;
+margin-top:10px;
+}
 
-    @keyframes floatUp {
-        from { transform: translateY(0); opacity: 1; }
-        to { transform: translateY(-110vh); opacity: 0; }
-    }
+canvas{
+position:fixed;
+top:0;
+left:0;
+pointer-events:none;
+}
 
-    img {
-        width: 250px;
-        border-radius: 20px;
-        margin-top: 20px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    }
+.glow{
+animation:glow 1s infinite alternate;
+}
+@keyframes glow{
+from{box-shadow:0 0 10px white;}
+to{box-shadow:0 0 30px yellow;}
+}
 </style>
 </head>
-
 <body>
 
-<audio id="bgMusic" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+<div id="loadingScreen">Loading something special for you... 💖</div>
+
+<div id="passwordScreen">
+<h2>Enter Secret Password 💌</h2>
+<input type="password" id="passwordInput">
+<button onclick="checkPassword()">Unlock 💖</button>
+</div>
+
+<audio id="music" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
 </audio>
 
+<canvas id="fireworks"></canvas>
+
 <div class="section">
-    <h1>Will you be my Valentine? 💖</h1>
+<h1>Will you be my Valentine, <span id="nameHere">My Love</span>? 💖</h1>
+<p id="countdown"></p>
 
-    <div class="buttons">
-        <button id="yesBtn">Yes 💕</button>
-        <button id="noBtn">No 💔</button>
-    </div>
+<button id="yesBtn">Yes 💕</button>
+<button id="noBtn">No 💔</button>
 
-    <!-- Lilly Flower Image -->
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/LiliumBulbiferumCroceum.jpg" alt="Lilly Flower">
+<input type="file" id="imageUpload" accept="image/*">
+<img id="preview" src="https://upload.wikimedia.org/wikipedia/commons/3/3f/LiliumBulbiferumCroceum.jpg">
 </div>
 
 <div class="section hidden" id="loveSection">
-    <div class="celebration">YAYYYYY!!! 💖🥰💍</div>
-    <p>You just made my heart so happy 💞</p>
+<h2>💌 A Letter For You 💌</h2>
+<p style="max-width:500px">
+You are my favorite notification, my happiest thought, and my forever person.  
+Every day with you feels magical. 💖
+</p>
+<h2 class="glow">💍 SHE SAID YES 💍</h2>
 </div>
 
 <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const loveSection = document.getElementById("loveSection");
-    const music = document.getElementById("bgMusic");
+const correctPassword="love123";
+document.getElementById("nameHere").innerText="Your Name";
 
-    let yesSize = 1;
+function checkPassword(){
+if(passwordInput.value===correctPassword){
+passwordScreen.style.display="none";
+}else alert("Wrong password 💔");
+}
 
-    function moveNoButton() {
-        const x = Math.random() * (window.innerWidth - 100);
-        const y = Math.random() * (window.innerHeight - 50);
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
+/* Music mobile safe */
+document.body.addEventListener("click",()=>{music.play().catch(()=>{});},{once:true});
 
-        yesSize += 0.2;
-        yesBtn.style.transform = `scale(${yesSize})`;
-    }
+/* Image Upload */
+imageUpload.onchange=e=>{
+const reader=new FileReader();
+reader.onload=()=>preview.src=reader.result;
+reader.readAsDataURL(e.target.files[0]);
+};
 
-    noBtn.addEventListener("click", moveNoButton);
+/* No Trap */
+let yesSize=1;
+let noClicks=0;
+const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+const messages=["Are you sure? 🥺","Really sure?? 💔","Think again 😭","Don't do this 💔","Last chance 😢","Please?? 🥺","Still no??","I’ll cry 😭","Final chance 😔","Okay fine... 😭"];
 
-    yesBtn.addEventListener("click", () => {
-        loveSection.classList.remove("hidden");
-        loveSection.scrollIntoView({ behavior: "smooth" });
-    });
+noBtn.onclick=()=>{
+if(noClicks<messages.length){
+noBtn.innerText=messages[noClicks++];
+}
+noBtn.style.left=Math.random()*80+"vw";
+noBtn.style.top=Math.random()*80+"vh";
+yesSize+=0.3;
+yesBtn.style.transform=`scale(${yesSize})`;
+};
 
-    // Start music after first interaction (mobile-friendly)
-    document.body.addEventListener("click", () => {
-        music.play().catch(() => {});
-    }, { once: true });
+yesBtn.onclick=()=>{
+loveSection.classList.remove("hidden");
+loveSection.scrollIntoView({behavior:"smooth"});
+launchFirework();
+};
 
-    // Create floating hearts
-    function createHeart() {
-        const heart = document.createElement("div");
-        heart.classList.add("heart");
-        heart.innerHTML = "💖";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = (Math.random() * 20 + 15) + "px";
-        heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
-        document.body.appendChild(heart);
+/* Countdown */
+function updateCountdown(){
+const now=new Date();
+let val=new Date(now.getFullYear(),1,14);
+if(now>val) val.setFullYear(now.getFullYear()+1);
+const diff=val-now;
+const d=Math.floor(diff/86400000);
+const h=Math.floor(diff/3600000)%24;
+const m=Math.floor(diff/60000)%60;
+const s=Math.floor(diff/1000)%60;
+countdown.innerText=`${d}d ${h}h ${m}m ${s}s until Valentine's 💕`;
+}
+setInterval(updateCountdown,1000);
+updateCountdown();
 
-        setTimeout(() => {
-            heart.remove();
-        }, 6000);
-    }
+/* Fireworks Canvas */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 
-    setInterval(createHeart, 500);
+function launchFirework(){
+for(let i=0;i<100;i++){
+ctx.fillStyle="hsl("+Math.random()*360+",100%,50%)";
+ctx.beginPath();
+ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height,3,0,Math.PI*2);
+ctx.fill();
+}
+setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),500);
+}
 </script>
 
 </body>
 </html>
+
